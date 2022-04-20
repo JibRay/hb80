@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace hb80
 {
@@ -12,6 +14,7 @@ namespace hb80
     {
         private static SerialPort _port = new SerialPort("COM1", 230400);
         private bool _connected = false;
+        private double _frequency = 0.0;
 
         // Scan the serial ports for the local oscillator connection. If
         // successful set _port.PortName and return true. Return false
@@ -62,6 +65,33 @@ namespace hb80
                 }
             }
             return status;
+        }
+
+        public void frequencyChanged(object sender, TextChangedEventArgs args)
+        {
+            double frequency = 0;
+
+            TextBox? textBox = sender as TextBox;
+            var valueText = textBox.Text;
+            if (valueText != null)
+            {
+                try
+                {
+                    frequency = Convert.ToDouble(valueText);
+                    if (frequency >= 3.5 && frequency <= 4.0)
+                    {
+                        textBox.Background = Brushes.Snow;
+                    }
+                    else
+                    {
+                        textBox.Background = Brushes.Orange;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    textBox.Background = Brushes.Orange;
+                }
+            }
         }
     }
 }

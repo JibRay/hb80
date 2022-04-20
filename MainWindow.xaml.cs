@@ -26,5 +26,10 @@ namespace hb80
             InitializeComponent();
             bool result = _localOscillator.initialize();
         }
+
+        private void frequencyChanged(object sender, TextChangedEventArgs args)
+        {
+            _localOscillator.frequencyChanged(sender, args);
+        }
     }
 }

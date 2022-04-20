@@ -5,40 +5,47 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:hb80"
         mc:Ignorable="d"
-        Title="80 Meter Transmitter" Height="120" Width="400"
+        Title="80 Meter Transmitter" Height="110" Width="400"
         ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10" />
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="4*" />
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="10" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*"/>
+            <RowDefinition Height="10" />
         </Grid.RowDefinitions>
         <Label Grid.Row="0" 
-               Grid.Column="2" 
+               Grid.Column="3" 
+               Height="38"
                FontSize="20" 
                FontWeight="Bold"
                HorizontalAlignment="Center">
             Frequency - MHz
         </Label>
-        <TextBlock Name="Frequency"
-                   Grid.Row="1"
-                   Grid.Column="2"
-                   FontSize="20"
-                   FontWeight="Bold"
-                   HorizontalAlignment="Center"
-                   TextWrapping="NoWrap"
-                   TextTrimming="CharacterEllipsis">
-            3.5136
-        </TextBlock>
+        <TextBox Name="Frequency"
+                 Grid.Row="1"
+                 Grid.Column="3"
+                 Height="38"
+                 FontSize="20"
+                 FontWeight="Bold"
+                 HorizontalAlignment="Center"
+                 TextWrapping="NoWrap"
+                 TextChanged="frequencyChanged">
+            3.500000
+        </TextBox>
         <Button Name="FreqeuncyDownFast"
                 Grid.Row="1"
-                Grid.Column="0"
+                Grid.Column="1"
+                Width="45"
+                Height="30"
                 FontSize="25"
                 FontWeight="Bold"
                 HorizontalAlignment="Center">
@@ -46,8 +53,9 @@
         </Button>
         <Button Name="FreqeuncyDown"
                 Grid.Row="1"
-                Grid.Column="1"
-                Width="40"
+                Grid.Column="2"
+                Width="45"
+                Height="30"
                 FontSize="25"
                 FontWeight="Bold"
                 HorizontalAlignment="Center">
@@ -55,8 +63,9 @@
         </Button>
         <Button Name="FreqeuncyUp"
                 Grid.Row="1"
-                Grid.Column="3"
-                Width="40"
+                Grid.Column="4"
+                Width="45"
+                Height="30"
                 FontSize="25"
                 FontWeight="Bold"
                 HorizontalAlignment="Center">
@@ -64,7 +73,9 @@
         </Button>
         <Button Name="FreqeuncyUpFast"
                 Grid.Row="1"
-                Grid.Column="4"
+                Grid.Column="5"
+                Width="45"
+                Height="30"
                 FontSize="25"
                 FontWeight="Bold"
                 HorizontalAlignment="Center">
