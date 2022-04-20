@@ -48,7 +48,9 @@
                 Height="30"
                 FontSize="25"
                 FontWeight="Bold"
-                HorizontalAlignment="Center">
+                HorizontalAlignment="Center"
+                PreviewMouseLeftButtonDown="frequencyDownFastStart"
+                PreviewMouseLeftButtonUp="frequencyDownFastEnd">
             &lt;&lt;
         </Button>
         <Button Name="FreqeuncyDown"
@@ -58,7 +60,9 @@
                 Height="30"
                 FontSize="25"
                 FontWeight="Bold"
-                HorizontalAlignment="Center">
+                HorizontalAlignment="Center"
+                PreviewMouseLeftButtonDown="frequencyDownStart"
+                PreviewMouseLeftButtonUp="frequencyDownEnd">
             &lt;
         </Button>
         <Button Name="FreqeuncyUp"
@@ -68,7 +72,9 @@
                 Height="30"
                 FontSize="25"
                 FontWeight="Bold"
-                HorizontalAlignment="Center">
+                HorizontalAlignment="Center"
+                PreviewMouseLeftButtonDown="frequencyUpStart"
+                PreviewMouseLeftButtonUp="frequencyUpEnd">
             &gt;
         </Button>
         <Button Name="FreqeuncyUpFast"
@@ -78,7 +84,9 @@
                 Height="30"
                 FontSize="25"
                 FontWeight="Bold"
-                HorizontalAlignment="Center">
+                HorizontalAlignment="Center"
+                PreviewMouseLeftButtonDown="frequencyUpFastStart"
+                PreviewMouseLeftButtonUp="frequencyUpFastEnd">
             &gt;&gt;
         </Button>
     </Grid>

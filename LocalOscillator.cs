@@ -1,25 +1,103 @@
 ﻿using System;
-using System.Collections.Generic;
+//using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using System.IO.Ports;
 using System.Threading;
 using System.Windows.Controls;
 using System.Windows.Media;
+//using System.Windows.Input;
+using System.Timers;
 
 namespace hb80
 {
+    public enum FrequencyChange
+    {
+        Idle,
+        Increase,
+        Decrease,
+        IncreaseFast,
+        DecreaseFast
+    }
+
     public class LocalOscillator
     {
         private static SerialPort _port = new SerialPort("COM1", 230400);
         private bool _connected = false;
-        private double _frequency = 0.0;
+        private static double _frequency = 0.0;
+        private static TextBox? _frequencyTextBox;
+        private static FrequencyChange _frequencyChangeMode = FrequencyChange.Idle;
+        private System.Windows.Threading.DispatcherTimer _frequencyChangeTimer;
+        public FrequencyChange FrequencyChangeMode
+        {
+            get => _frequencyChangeMode;
+            set
+            {
+                _frequencyChangeMode = value;
+                if (_frequencyChangeMode == FrequencyChange.Idle)
+                {
+                    // If idle stop the frequency step timer.
+                    _frequencyChangeTimer.Stop();
+                }
+                else
+                {
+                    // Step the frequency value up or down one step, pause
+                    // then start the timer.
+                    stepFrequency();
+                    Thread.Sleep(200);
+                    _frequencyChangeTimer.Start();
+                }
+            }
+        }
+
+        // Step the frequency value up or down depending on the value of
+        // _frequencyChangeMode.
+        private static void stepFrequency()
+        {
+            switch (_frequencyChangeMode)
+            {
+                case FrequencyChange.Idle:
+                    break;
+                case FrequencyChange.Increase:
+                    increaseFrequency(0.001);
+                    break;
+                case FrequencyChange.Decrease:
+                    decreaseFrequency(0.001);
+                    break;
+                case FrequencyChange.IncreaseFast:
+                    increaseFrequency(0.005);
+                    break;
+                case FrequencyChange.DecreaseFast:
+                    decreaseFrequency(0.005);
+                    break;
+            }
+
+        }
+
+        // This timer steps the frequency value up or down on each tick.
+        private static void onTimerTick(object sender, EventArgs e)
+        {
+            stepFrequency();
+        }
+
+        public bool initialize()
+        {
+            if (!findPortConnection())
+                return false;
+
+            _frequencyChangeTimer = new System.Windows.Threading.DispatcherTimer();
+            _frequencyChangeTimer.Tick += new EventHandler(onTimerTick);
+            _frequencyChangeTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            _frequencyChangeTimer.Start();
+
+            return true;
+        }
 
         // Scan the serial ports for the local oscillator connection. If
         // successful set _port.PortName and return true. Return false
         // otherwise.
-        public bool initialize ()
+        public bool findPortConnection ()
         {
             bool status = false;
             byte[] line = new byte[1000];
@@ -67,30 +145,51 @@ namespace hb80
             return status;
         }
 
+        // Process a frequency text change event from the Textbox.
         public void frequencyChanged(object sender, TextChangedEventArgs args)
         {
-            double frequency = 0;
-
-            TextBox? textBox = sender as TextBox;
-            var valueText = textBox.Text;
+             _frequencyTextBox = sender as TextBox;
+            var valueText = _frequencyTextBox.Text;
             if (valueText != null)
             {
                 try
                 {
-                    frequency = Convert.ToDouble(valueText);
-                    if (frequency >= 3.5 && frequency <= 4.0)
+                    _frequency = Convert.ToDouble(valueText);
+                    if (_frequency >= 3.5 && _frequency <= 4.0)
                     {
-                        textBox.Background = Brushes.Snow;
+                        _frequencyTextBox.Background = Brushes.Snow;
                     }
                     else
                     {
-                        textBox.Background = Brushes.Orange;
+                        _frequencyTextBox.Background = Brushes.Orange;
                     }
                 }
                 catch (Exception ex)
                 {
-                    textBox.Background = Brushes.Orange;
+                    _frequencyTextBox.Background = Brushes.Orange;
                 }
+            }
+        }
+
+        // Increase the frequency by 'increment'. Check for upper bound.
+        private static void increaseFrequency(double increment)
+        {
+            if (_frequency < 4.0)
+            {
+                _frequency += increment;
+                _frequency = _frequency > 4.0 ? 4.0 : _frequency;
+                _frequencyTextBox.Text = String.Format("{0,-7:F6}", _frequency);
+            }
+        }
+
+        // Decrease the frequency by 'increment'. Check for lower bound.
+        private static void decreaseFrequency(double increment)
+        {
+            if (_frequency > 3.5)
+            {
+                _frequency -= increment;
+                _frequency = _frequency < 3.5 ? 3.5 : _frequency;
+                _frequencyTextBox.Text = String.Format("{0,-7:F6}", _frequency);
             }
         }
     }
