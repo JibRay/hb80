@@ -183,9 +183,7 @@ namespace hb80
         public void frequencyChanged(object sender, TextChangedEventArgs args)
         {
              _frequencyTextBox = sender as TextBox;
-//#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var valueText = _frequencyTextBox.Text;
-//#pragma warning restore CS8602 // Dereference of a possibly null reference.
             if (valueText != null)
             {
                 try
@@ -214,9 +212,7 @@ namespace hb80
             {
                 _frequency += increment;
                 _frequency = _frequency > 4.0 ? 4.0 : _frequency;
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 _frequencyTextBox.Text = String.Format("{0,-7:F6}", _frequency);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
             }
         }
 
@@ -227,9 +223,7 @@ namespace hb80
             {
                 _frequency -= increment;
                 _frequency = _frequency < 3.5 ? 3.5 : _frequency;
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 _frequencyTextBox.Text = String.Format("{0,-7:F6}", _frequency);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
             }
         }
     }
