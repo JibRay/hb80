@@ -24,6 +24,7 @@ namespace hb80
         public MainWindow()
         {
             InitializeComponent();
+            _localOscillator.StatusTextBox = StatusText;
             bool result = _localOscillator.initialize();
         }
 

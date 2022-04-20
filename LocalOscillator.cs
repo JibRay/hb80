@@ -26,9 +26,15 @@ namespace hb80
         private static SerialPort _port = new SerialPort("COM1", 230400);
         private bool _connected = false;
         private static double _frequency = 0.0;
-        private static TextBox? _frequencyTextBox;
+        private static TextBox? _frequencyTextBox, _statusTextBox;
         private static FrequencyChange _frequencyChangeMode = FrequencyChange.Idle;
         private System.Windows.Threading.DispatcherTimer _frequencyChangeTimer;
+        public bool Connected => _connected;
+        public TextBox? StatusTextBox
+        {
+            get => _statusTextBox;
+            set => _statusTextBox = value;
+        }
         public FrequencyChange FrequencyChangeMode
         {
             get => _frequencyChangeMode;
@@ -83,8 +89,15 @@ namespace hb80
 
         public bool initialize()
         {
-            if (!findPortConnection())
+            if (findPortConnection())
+            {
+                StatusTextBox.Text = "Local oscillator found at " + _port.PortName;
+            }
+            else
+            {
+                StatusTextBox.Text = "Unable to find local oscillator connection";
                 return false;
+            }
 
             _frequencyChangeTimer = new System.Windows.Threading.DispatcherTimer();
             _frequencyChangeTimer.Tick += new EventHandler(onTimerTick);
@@ -149,7 +162,9 @@ namespace hb80
         public void frequencyChanged(object sender, TextChangedEventArgs args)
         {
              _frequencyTextBox = sender as TextBox;
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var valueText = _frequencyTextBox.Text;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             if (valueText != null)
             {
                 try
@@ -178,7 +193,9 @@ namespace hb80
             {
                 _frequency += increment;
                 _frequency = _frequency > 4.0 ? 4.0 : _frequency;
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 _frequencyTextBox.Text = String.Format("{0,-7:F6}", _frequency);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             }
         }
 
@@ -189,7 +206,9 @@ namespace hb80
             {
                 _frequency -= increment;
                 _frequency = _frequency < 3.5 ? 3.5 : _frequency;
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 _frequencyTextBox.Text = String.Format("{0,-7:F6}", _frequency);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             }
         }
     }

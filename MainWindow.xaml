@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:hb80"
         mc:Ignorable="d"
-        Title="80 Meter Transmitter" Height="110" Width="400"
+        Title="80 Meter Transmitter" Height="150" Width="400"
         ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -19,7 +19,8 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
             <RowDefinition Height="10" />
         </Grid.RowDefinitions>
         <Label Grid.Row="0" 
@@ -33,7 +34,7 @@
         <TextBox Name="Frequency"
                  Grid.Row="1"
                  Grid.Column="3"
-                 Height="38"
+                 Height="34"
                  FontSize="20"
                  FontWeight="Bold"
                  HorizontalAlignment="Center"
@@ -89,5 +90,13 @@
                 PreviewMouseLeftButtonUp="frequencyUpFastEnd">
             &gt;&gt;
         </Button>
+        <TextBox Name="StatusText"
+                 Grid.Row="2"
+                 Grid.Column="1"
+                 Grid.ColumnSpan="5"
+                 Height="34"
+                 TextWrapping="Wrap">
+            80 meter transmitter control
+        </TextBox>
     </Grid>
 </Window>
