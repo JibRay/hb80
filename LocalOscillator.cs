@@ -23,13 +23,14 @@ namespace hb80
 
     public class LocalOscillator
     {
-        private static SerialPort _port = new SerialPort("COM1", 230400);
+        private static SerialPort _port = new SerialPort("COM1", 19200);
         private bool _connected = false;
         private static double _frequency = 0.0;
         private static TextBox? _frequencyTextBox, _statusTextBox;
         private static FrequencyChange _frequencyChangeMode = FrequencyChange.Idle;
-        private System.Windows.Threading.DispatcherTimer _frequencyChangeTimer;
+        private System.Windows.Threading.DispatcherTimer _frequencyChangeTimer, _frequencyUpdateTimer;
         public bool Connected => _connected;
+
         public TextBox? StatusTextBox
         {
             get => _statusTextBox;
@@ -57,6 +58,39 @@ namespace hb80
             }
         }
 
+        ~LocalOscillator()
+        {
+            _port.Dispose();
+            _frequencyChangeTimer.Stop();
+            _frequencyUpdateTimer.Stop();
+        }
+
+        // Initialize this LocalOscillator object. Must be called before using
+        // this object.
+        public bool initialize()
+        {
+            if (findPortConnection())
+            {
+                StatusTextBox.Text = "Local oscillator found at " + _port.PortName;
+            }
+            else
+            {
+                StatusTextBox.Text = "Unable to find local oscillator connection";
+                return false;
+            }
+
+            _frequencyChangeTimer = new System.Windows.Threading.DispatcherTimer();
+            _frequencyChangeTimer.Tick += new EventHandler(onChangeTimerTick);
+            _frequencyChangeTimer.Interval = new TimeSpan(0, 0, 0, 0, 100); // 100 milliseconds.
+
+            _frequencyUpdateTimer = new System.Windows.Threading.DispatcherTimer();
+            _frequencyUpdateTimer.Tick += new EventHandler(onUpdateTimerTick);
+            _frequencyUpdateTimer.Interval = new TimeSpan(0, 0, 0, 1); // 1 second.
+            _frequencyUpdateTimer.Start();
+
+            return true;
+        }
+
         // Step the frequency value up or down depending on the value of
         // _frequencyChangeMode.
         private static void stepFrequency()
@@ -82,29 +116,18 @@ namespace hb80
         }
 
         // This timer steps the frequency value up or down on each tick.
-        private static void onTimerTick(object sender, EventArgs e)
+        private static void onChangeTimerTick(object sender, EventArgs e)
         {
             stepFrequency();
         }
 
-        public bool initialize()
+        private static void onUpdateTimerTick(object sender, EventArgs e)
         {
-            if (findPortConnection())
-            {
-                StatusTextBox.Text = "Local oscillator found at " + _port.PortName;
-            }
-            else
-            {
-                StatusTextBox.Text = "Unable to find local oscillator connection";
-                return false;
-            }
-
-            _frequencyChangeTimer = new System.Windows.Threading.DispatcherTimer();
-            _frequencyChangeTimer.Tick += new EventHandler(onTimerTick);
-            _frequencyChangeTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
-            _frequencyChangeTimer.Start();
-
-            return true;
+            var text = String.Format("f{0,0:F6}\n", _frequency);
+            var length = text.Length;
+            byte[] send = Encoding.ASCII.GetBytes(text);
+            if (_port.IsOpen)
+                _port.Write(send, 0, length);
         }
 
         // Scan the serial ports for the local oscillator connection. If
@@ -150,11 +173,9 @@ namespace hb80
                 {
                     status = false;
                 }
-                finally
-                {
-                    _port.Close();
-                }
             }
+            if (!status)
+                _port.Close();
             return status;
         }
 
@@ -162,9 +183,9 @@ namespace hb80
         public void frequencyChanged(object sender, TextChangedEventArgs args)
         {
              _frequencyTextBox = sender as TextBox;
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+//#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var valueText = _frequencyTextBox.Text;
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+//#pragma warning restore CS8602 // Dereference of a possibly null reference.
             if (valueText != null)
             {
                 try
