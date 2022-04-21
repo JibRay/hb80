@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:hb80"
         mc:Ignorable="d"
-        Title="80 Meter Transmitter" Height="150" Width="400"
+        Title="80 Meter Transmitter" Height="150" Width="250"
         ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -25,19 +25,19 @@
         </Grid.RowDefinitions>
         <Label Grid.Row="0" 
                Grid.Column="3" 
-               Height="38"
-               FontSize="20" 
+               FontSize="12" 
                FontWeight="Bold"
-               HorizontalAlignment="Center">
+               HorizontalAlignment="Center"
+               VerticalAlignment="Stretch">
             Frequency - MHz
         </Label>
         <TextBox Name="Frequency"
                  Grid.Row="1"
                  Grid.Column="3"
-                 Height="34"
-                 FontSize="20"
+                 FontSize="18"
                  FontWeight="Bold"
                  HorizontalAlignment="Center"
+                 VerticalAlignment="Stretch"
                  TextWrapping="NoWrap"
                  TextChanged="frequencyChanged">
             3.500000
@@ -45,23 +45,20 @@
         <Button Name="FreqeuncyDownFast"
                 Grid.Row="1"
                 Grid.Column="1"
-                Width="45"
-                Height="30"
-                FontSize="25"
-                FontWeight="Bold"
-                HorizontalAlignment="Center"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
                 PreviewMouseLeftButtonDown="frequencyDownFastStart"
                 PreviewMouseLeftButtonUp="frequencyDownFastEnd">
-            &lt;&lt;
+            <Image Source="images\redArrowLeft.png">
+            </Image>
         </Button>
         <Button Name="FreqeuncyDown"
                 Grid.Row="1"
                 Grid.Column="2"
-                Width="45"
-                Height="30"
-                FontSize="25"
+                FontSize="18"
                 FontWeight="Bold"
-                HorizontalAlignment="Center"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
                 PreviewMouseLeftButtonDown="frequencyDownStart"
                 PreviewMouseLeftButtonUp="frequencyDownEnd">
             &lt;
@@ -69,11 +66,10 @@
         <Button Name="FreqeuncyUp"
                 Grid.Row="1"
                 Grid.Column="4"
-                Width="45"
-                Height="30"
-                FontSize="25"
+                FontSize="18"
                 FontWeight="Bold"
-                HorizontalAlignment="Center"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
                 PreviewMouseLeftButtonDown="frequencyUpStart"
                 PreviewMouseLeftButtonUp="frequencyUpEnd">
             &gt;
@@ -81,11 +77,10 @@
         <Button Name="FreqeuncyUpFast"
                 Grid.Row="1"
                 Grid.Column="5"
-                Width="45"
-                Height="30"
-                FontSize="25"
+                FontSize="18"
                 FontWeight="Bold"
-                HorizontalAlignment="Center"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
                 PreviewMouseLeftButtonDown="frequencyUpFastStart"
                 PreviewMouseLeftButtonUp="frequencyUpFastEnd">
             &gt;&gt;
@@ -94,7 +89,8 @@
                  Grid.Row="2"
                  Grid.Column="1"
                  Grid.ColumnSpan="5"
-                 Height="34"
+                 HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch"
                  TextWrapping="Wrap">
             80 meter transmitter control
         </TextBox>

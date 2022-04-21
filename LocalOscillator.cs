@@ -191,16 +191,16 @@ namespace hb80
                     _frequency = Convert.ToDouble(valueText);
                     if (_frequency >= 3.5 && _frequency <= 4.0)
                     {
-                        _frequencyTextBox.Background = Brushes.Snow;
+                        _frequencyTextBox.Background = Brushes.LightCyan;
                     }
                     else
                     {
-                        _frequencyTextBox.Background = Brushes.Orange;
+                        _frequencyTextBox.Background = Brushes.LightPink;
                     }
                 }
                 catch (Exception ex)
                 {
-                    _frequencyTextBox.Background = Brushes.Orange;
+                    _frequencyTextBox.Background = Brushes.LightPink;
                 }
             }
         }
