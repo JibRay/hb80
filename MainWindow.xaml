@@ -49,41 +49,34 @@
                 VerticalAlignment="Stretch"
                 PreviewMouseLeftButtonDown="frequencyDownFastStart"
                 PreviewMouseLeftButtonUp="frequencyDownFastEnd">
-            <Image Source="images\redArrowLeft.png">
-            </Image>
+            <Image Source="images\redArrowLeft.png"></Image>
         </Button>
         <Button Name="FreqeuncyDown"
                 Grid.Row="1"
                 Grid.Column="2"
-                FontSize="18"
-                FontWeight="Bold"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 PreviewMouseLeftButtonDown="frequencyDownStart"
                 PreviewMouseLeftButtonUp="frequencyDownEnd">
-            &lt;
+            <Image Source="images\blueArrowLeft.png"></Image>
         </Button>
         <Button Name="FreqeuncyUp"
                 Grid.Row="1"
                 Grid.Column="4"
-                FontSize="18"
-                FontWeight="Bold"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 PreviewMouseLeftButtonDown="frequencyUpStart"
                 PreviewMouseLeftButtonUp="frequencyUpEnd">
-            &gt;
+            <Image Source="images\blueArrowRight.png"></Image>
         </Button>
         <Button Name="FreqeuncyUpFast"
                 Grid.Row="1"
                 Grid.Column="5"
-                FontSize="18"
-                FontWeight="Bold"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 PreviewMouseLeftButtonDown="frequencyUpFastStart"
                 PreviewMouseLeftButtonUp="frequencyUpFastEnd">
-            &gt;&gt;
+            <Image Source="images\redArrowRight.png"></Image>
         </Button>
         <TextBox Name="StatusText"
                  Grid.Row="2"
