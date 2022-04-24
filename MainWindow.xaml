@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:hb80"
         mc:Ignorable="d"
-        Title="80 Meter Transmitter" Height="150" Width="250"
+        Title="80 Meter Transmitter" Height="180" Width="250"
+        Background="DarkSlateGray"
         ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -21,14 +22,16 @@
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
             <RowDefinition Height="10" />
         </Grid.RowDefinitions>
         <Label Grid.Row="0" 
                Grid.Column="3" 
                FontSize="12" 
                FontWeight="Bold"
+               Foreground="White"
                HorizontalAlignment="Center"
-               VerticalAlignment="Stretch">
+               VerticalAlignment="Bottom">
             Frequency - MHz
         </Label>
         <TextBox Name="Frequency"
@@ -37,7 +40,7 @@
                  FontSize="18"
                  FontWeight="Bold"
                  HorizontalAlignment="Center"
-                 VerticalAlignment="Stretch"
+                 VerticalAlignment="Center"
                  TextWrapping="NoWrap"
                  TextChanged="frequencyChanged">
             3.500000
@@ -78,13 +81,33 @@
                 PreviewMouseLeftButtonUp="frequencyUpFastEnd">
             <Image Source="images\redArrowRight.png"></Image>
         </Button>
-        <TextBox Name="StatusText"
+        <Label Grid.Row="2"
+               Grid.Column="1"
+               Grid.ColumnSpan="3"
+               FontSize="12" 
+               FontWeight="Bold"
+               Foreground="White"
+               HorizontalAlignment="right"
+               VerticalAlignment="center">
+            Words per minute:
+        </Label>
+        <TextBox Name="wordsPerMinute"
                  Grid.Row="2"
+                 Grid.Column="4"
+                 FontSize="18" 
+                 FontWeight="Bold"
+                 VerticalAlignment="Center"
+                 TextChanged="wordsPerMinuteChanged">
+             20
+        </TextBox>
+        <TextBox Name="StatusText"
+                 Grid.Row="3"
                  Grid.Column="1"
                  Grid.ColumnSpan="5"
                  HorizontalAlignment="Stretch"
                  VerticalAlignment="Stretch"
-                 TextWrapping="Wrap">
+                 TextWrapping="Wrap"
+                 IsReadOnly="True">
             80 meter transmitter control
         </TextBox>
     </Grid>

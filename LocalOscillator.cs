@@ -26,7 +26,8 @@ namespace hb80
         private static SerialPort _port = new SerialPort("COM1", 19200);
         private bool _connected = false;
         private static double _frequency = 0.0;
-        private static TextBox? _frequencyTextBox, _statusTextBox;
+        private static int _wordsPerMinute = 20;
+        private static TextBox? _frequencyTextBox, _statusTextBox, _wordsPerMinuteTextBox;
         private static FrequencyChange _frequencyChangeMode = FrequencyChange.Idle;
         private System.Windows.Threading.DispatcherTimer _frequencyChangeTimer, _frequencyUpdateTimer;
         public bool Connected => _connected;
@@ -123,9 +124,15 @@ namespace hb80
 
         private static void onUpdateTimerTick(object sender, EventArgs e)
         {
-            var text = String.Format("f{0,0:F6}\n", _frequency);
+            var text = string.Format("f{0,0:F6}\n", _frequency);
             var length = text.Length;
             byte[] send = Encoding.ASCII.GetBytes(text);
+            if (_port.IsOpen)
+                _port.Write(send, 0, length);
+
+            text = string.Format("w{0}\n", _wordsPerMinute);
+            length = text.Length;
+            send = Encoding.ASCII.GetBytes(text);
             if (_port.IsOpen)
                 _port.Write(send, 0, length);
         }
@@ -190,17 +197,34 @@ namespace hb80
                 {
                     _frequency = Convert.ToDouble(valueText);
                     if (_frequency >= 3.5 && _frequency <= 4.0)
-                    {
-                        _frequencyTextBox.Background = Brushes.LightCyan;
-                    }
+                        _frequencyTextBox.Background = Brushes.LightGray;
                     else
-                    {
                         _frequencyTextBox.Background = Brushes.LightPink;
-                    }
                 }
                 catch (Exception ex)
                 {
                     _frequencyTextBox.Background = Brushes.LightPink;
+                }
+            }
+        }
+
+        public void wordsPerMinuteChanged(object sender, TextChangedEventArgs args)
+        {
+            _wordsPerMinuteTextBox = sender as TextBox;
+            var valueText = _wordsPerMinuteTextBox.Text;
+            if (valueText != null)
+            {
+                try
+                {
+                    _wordsPerMinute = Convert.ToInt32(valueText);
+                    if (_wordsPerMinute >= 1 && _wordsPerMinute <= 40)
+                        _wordsPerMinuteTextBox.Background = Brushes.LightGray;
+                    else
+                        _wordsPerMinuteTextBox.Background= Brushes.LightPink;
+                }
+                catch (Exception ex)
+                {
+                    _wordsPerMinuteTextBox.Background = Brushes.LightPink;
                 }
             }
         }
@@ -212,7 +236,7 @@ namespace hb80
             {
                 _frequency += increment;
                 _frequency = _frequency > 4.0 ? 4.0 : _frequency;
-                _frequencyTextBox.Text = String.Format("{0,-7:F6}", _frequency);
+                _frequencyTextBox.Text = string.Format("{0,-7:F6}", _frequency);
             }
         }
 
@@ -223,7 +247,7 @@ namespace hb80
             {
                 _frequency -= increment;
                 _frequency = _frequency < 3.5 ? 3.5 : _frequency;
-                _frequencyTextBox.Text = String.Format("{0,-7:F6}", _frequency);
+                _frequencyTextBox.Text = string.Format("{0,-7:F6}", _frequency);
             }
         }
     }

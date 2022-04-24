@@ -34,6 +34,11 @@ namespace hb80
             _localOscillator.frequencyChanged(sender, args);
         }
 
+        private void wordsPerMinuteChanged(object sender, TextChangedEventArgs args)
+        {
+            _localOscillator.wordsPerMinuteChanged(sender, args);
+        }
+
         private void frequencyDownStart(object sender, MouseButtonEventArgs args)
         {
             _localOscillator.FrequencyChangeMode = FrequencyChange.Decrease;
