@@ -21,11 +21,17 @@ namespace hb80
         DecreaseFast
     }
 
+    // This class is the interface to the SI5351 frequency synthesizer.
+    // Communication with the chip is via an Arduino Nano module.
+    // Communication is via SerialPort. The port connection is found
+    // dynamically using findPortConnection().
+    // This class can also change the iambic key words per minute.
     public class LocalOscillator
     {
+        private const double smallStep = 100e-6, largeStep = 500e-6; // In MHz.
         private static SerialPort _port = new SerialPort("COM1", 19200);
         private bool _connected = false;
-        private static double _frequency = 0.0;
+        private static double _frequency = 0.0, _newFrequency = 0.0;
         private static int _wordsPerMinute = 20;
         private static TextBox? _frequencyTextBox, _statusTextBox, _wordsPerMinuteTextBox;
         private static FrequencyChange _frequencyChangeMode = FrequencyChange.Idle;
@@ -80,10 +86,12 @@ namespace hb80
                 return false;
             }
 
+            // Set the rate at which holding a button changes the frequency.
             _frequencyChangeTimer = new System.Windows.Threading.DispatcherTimer();
             _frequencyChangeTimer.Tick += new EventHandler(onChangeTimerTick);
             _frequencyChangeTimer.Interval = new TimeSpan(0, 0, 0, 0, 100); // 100 milliseconds.
 
+            // Set the rate at which the frequency sythesizer is updated.
             _frequencyUpdateTimer = new System.Windows.Threading.DispatcherTimer();
             _frequencyUpdateTimer.Tick += new EventHandler(onUpdateTimerTick);
             _frequencyUpdateTimer.Interval = new TimeSpan(0, 0, 0, 1); // 1 second.
@@ -101,16 +109,16 @@ namespace hb80
                 case FrequencyChange.Idle:
                     break;
                 case FrequencyChange.Increase:
-                    increaseFrequency(0.001);
+                    increaseFrequency(smallStep);
                     break;
                 case FrequencyChange.Decrease:
-                    decreaseFrequency(0.001);
+                    decreaseFrequency(smallStep);
                     break;
                 case FrequencyChange.IncreaseFast:
-                    increaseFrequency(0.005);
+                    increaseFrequency(largeStep);
                     break;
                 case FrequencyChange.DecreaseFast:
-                    decreaseFrequency(0.005);
+                    decreaseFrequency(largeStep);
                     break;
             }
 
@@ -122,13 +130,22 @@ namespace hb80
             stepFrequency();
         }
 
+        // This timer sends a new frequency value to the frequency synthesizer.
         private static void onUpdateTimerTick(object sender, EventArgs e)
         {
-            var text = string.Format("f{0,0:F6}\n", _frequency);
-            var length = text.Length;
-            byte[] send = Encoding.ASCII.GetBytes(text);
-            if (_port.IsOpen)
-                _port.Write(send, 0, length);
+            var text = "";
+            var length = 0;
+            byte[] send;
+
+            if (Math.Abs(_frequency - _newFrequency) > 2.0e-6)
+            {
+                _frequency = _newFrequency;
+                text = string.Format("f{0,0:F6}\n", _frequency);
+                length = text.Length;
+                send = Encoding.ASCII.GetBytes(text);
+                if (_port.IsOpen)
+                    _port.Write(send, 0, length);
+            }
 
             text = string.Format("w{0}\n", _wordsPerMinute);
             length = text.Length;
@@ -189,15 +206,19 @@ namespace hb80
         // Process a frequency text change event from the Textbox.
         public void frequencyChanged(object sender, TextChangedEventArgs args)
         {
+            double frequency;
              _frequencyTextBox = sender as TextBox;
             var valueText = _frequencyTextBox.Text;
             if (valueText != null)
             {
                 try
                 {
-                    _frequency = Convert.ToDouble(valueText);
-                    if (_frequency >= 3.5 && _frequency <= 4.0)
+                    frequency = Convert.ToDouble(valueText);
+                    if (frequency >= 3.5 && frequency <= 4.0)
+                    {
+                        _newFrequency = frequency;
                         _frequencyTextBox.Background = Brushes.LightGray;
+                    }
                     else
                         _frequencyTextBox.Background = Brushes.LightPink;
                 }
@@ -232,22 +253,22 @@ namespace hb80
         // Increase the frequency by 'increment'. Check for upper bound.
         private static void increaseFrequency(double increment)
         {
-            if (_frequency < 4.0)
+            if (_newFrequency < 4.0)
             {
-                _frequency += increment;
-                _frequency = _frequency > 4.0 ? 4.0 : _frequency;
-                _frequencyTextBox.Text = string.Format("{0,-7:F6}", _frequency);
+                _newFrequency += increment;
+                _newFrequency = _newFrequency > 4.0 ? 4.0 : _newFrequency;
+                _frequencyTextBox.Text = string.Format("{0,-7:F6}", _newFrequency);
             }
         }
 
         // Decrease the frequency by 'increment'. Check for lower bound.
         private static void decreaseFrequency(double increment)
         {
-            if (_frequency > 3.5)
+            if (_newFrequency > 3.5)
             {
-                _frequency -= increment;
-                _frequency = _frequency < 3.5 ? 3.5 : _frequency;
-                _frequencyTextBox.Text = string.Format("{0,-7:F6}", _frequency);
+                _newFrequency -= increment;
+                _newFrequency = _newFrequency < 3.5 ? 3.5 : _newFrequency;
+                _frequencyTextBox.Text = string.Format("{0,-7:F6}", _newFrequency);
             }
         }
     }
