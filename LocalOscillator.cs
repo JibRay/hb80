@@ -30,7 +30,8 @@ namespace hb80
     {
         private const double smallStep = 100e-6, largeStep = 500e-6; // In MHz.
         private static SerialPort _port = new SerialPort("COM1", 19200);
-        private bool _connected = false;
+        private static bool _connected = false;
+        private static bool keyEnabled = true;
         private static double _frequency = 0.0, _newFrequency = 0.0;
         private static int _wordsPerMinute = 20;
         private static TextBox? _frequencyTextBox, _statusTextBox, _wordsPerMinuteTextBox;
@@ -152,6 +153,12 @@ namespace hb80
             send = Encoding.ASCII.GetBytes(text);
             if (_port.IsOpen)
                 _port.Write(send, 0, length);
+
+            text = keyEnabled ? "k1\n" : "k0\n";
+            length = text.Length;
+            send = Encoding.ASCII.GetBytes(text);
+            if (_port.IsOpen)
+                _port.Write(send, 0, length);
         }
 
         // Scan the serial ports for the local oscillator connection. If
@@ -217,14 +224,14 @@ namespace hb80
                     if (frequency >= 3.5 && frequency <= 4.0)
                     {
                         _newFrequency = frequency;
-                        _frequencyTextBox.Background = Brushes.LightGray;
+                        _frequencyTextBox.Foreground = Brushes.White;
                     }
                     else
-                        _frequencyTextBox.Background = Brushes.LightPink;
+                        _frequencyTextBox.Foreground = Brushes.LightPink;
                 }
                 catch (Exception ex)
                 {
-                    _frequencyTextBox.Background = Brushes.LightPink;
+                    _frequencyTextBox.Foreground = Brushes.LightPink;
                 }
             }
         }
@@ -239,15 +246,34 @@ namespace hb80
                 {
                     _wordsPerMinute = Convert.ToInt32(valueText);
                     if (_wordsPerMinute >= 1 && _wordsPerMinute <= 40)
-                        _wordsPerMinuteTextBox.Background = Brushes.LightGray;
+                        _wordsPerMinuteTextBox.Foreground = Brushes.White;
                     else
-                        _wordsPerMinuteTextBox.Background= Brushes.LightPink;
+                        _wordsPerMinuteTextBox.Foreground = Brushes.LightPink;
                 }
                 catch (Exception ex)
                 {
-                    _wordsPerMinuteTextBox.Background = Brushes.LightPink;
+                    _wordsPerMinuteTextBox.Foreground = Brushes.LightPink;
                 }
             }
+        }
+
+        public void changeKeyEnable(object sender)
+        {
+            var keyEnableButton = sender as Button;
+            if (keyEnableButton != null)
+            {
+                keyEnabled = !keyEnabled;
+                if (keyEnabled)
+                {
+                    keyEnableButton.Background = Brushes.White;
+                    keyEnableButton.Foreground = Brushes.Black;
+                } else
+                {
+                    keyEnableButton.Background= Brushes.DarkSlateGray;
+                    keyEnableButton.Foreground= Brushes.White;
+                }
+            }
+
         }
 
         // Increase the frequency by 'increment'. Check for upper bound.

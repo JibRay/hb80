@@ -11,6 +11,8 @@
     <None Remove="images\blueArrow.png" />
     <None Remove="images\blueArrowLeft.png" />
     <None Remove="images\blueArrowRight.png" />
+    <None Remove="images\lightRedArrowLeft.png" />
+    <None Remove="images\lightRedArrowRight.png" />
     <None Remove="images\redArrowLeft.png" />
     <None Remove="images\redArrowRight.png" />
   </ItemGroup>
@@ -27,6 +29,12 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\blueArrowRight.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\lightRedArrowLeft.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="images\lightRedArrowRight.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="images\redArrowLeft.png">

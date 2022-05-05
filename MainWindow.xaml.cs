@@ -78,5 +78,10 @@ namespace hb80
         {
             _localOscillator.FrequencyChangeMode = FrequencyChange.Idle;
         }
+
+        private void changeKeyEnable(object sender, MouseButtonEventArgs args)
+        {
+            _localOscillator.changeKeyEnable(sender);
+        }
     }
 }
